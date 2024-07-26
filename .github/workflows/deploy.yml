@@ -2,17 +2,31 @@ name: NodeJS with Webpack
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "*" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "*" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -25,22 +39,10 @@ jobs:
     - name: Build
       run: |
         npm run install-deps
-        npm build
+        npm run build
 
-
-    - name: Deploy GitHub Pages site
-      uses: actions/deploy-pages@v4.0.5
+    - name: Deploy to GH Pages 🚀
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        # GitHub token
-        token: ${{ github.token }}
-        # Time in milliseconds after which to timeout and cancel the deployment (default: 10 minutes)
-        timeout: 600000
-        # Maximum number of status report errors before cancelling a deployment (default: 10)
-        error_count: 10
-        # Time in milliseconds between two deployment status report (default: 5 seconds)
-        reporting_interval: 5000
-        # Name of the artifact to deploy
-        artifact_name: dist
-        # Is this attempting to deploy a pull request as a GitHub Pages preview site? (NOTE: This feature is only in alpha currently and is not available to the public!)
-        preview: true
-              
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: public
