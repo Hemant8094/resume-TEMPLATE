@@ -41,14 +41,8 @@ jobs:
         npm run install-deps
         npm run build
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
-
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+    - name: Deploy to GH Pages 🚀
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        path: './dist'
-    - name: Deploy GitHub Pages site
-      uses: actions/deploy-pages@v4.0.5
-      id: deployment
-              
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: public
