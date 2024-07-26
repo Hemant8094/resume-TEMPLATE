@@ -11,6 +11,7 @@
     "install-deps1": "npm ci --no-audit --timing",
     "install-deps": "npm install"
   },
+  
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
